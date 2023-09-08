@@ -8,7 +8,8 @@ re = 6.37122e6;% Earth radius
 
 domain_file = [e3sm_input 'share/domains/domain.lnd.r05_oEC60to30v3.190418.nc'];
 surf_file   = [e3sm_input 'lnd/clm2/surfdata_map/surfdata_0.5x0.5_simyr2010_c200624.nc'];
-mosart_file = [e3sm_input 'rof/mosart/MOSART_Global_half_20200720.nc'];
+%mosart_file = [e3sm_input 'rof/mosart/MOSART_Global_half_20200720.nc'];
+mosart_file = '../data/MOSART_Global_half_20200720.nc';
 
 out_netcdf_dir = '../inputdata';
 
@@ -16,37 +17,39 @@ frac = ncread(domain_file,'frac');
 mask = ncread(domain_file,'mask');
 lonc = ncread(domain_file,'xc');
 latc = ncread(domain_file,'yc');
+area = ncread(domain_file,'area');
 
 index_lnd = find(frac > 0 & latc >= -60);
 lon1d = lonc(index_lnd);
 lat1d = latc(index_lnd);
 frac1d = frac(index_lnd);
 mask1d = mask(index_lnd);
+area1d = area(index_lnd);
 [xv,yv] = xc2xv(lon1d,lat1d,0.5,0.5);
 
 continent = struct([]);
 continent_code = {'af',    'ar',    'as',  'au',        'eu',    'gr',       'na',           'sa',           'si'     };
 continent_name = {'Africa','Arctic','Asia','Austrialia','Europe','Greenland','North America','South America','Siberia'};
 cmap = getPanoply_cMap('EO_aura_omi_formal');
-cb = plot_globalspatial(lonc,latc,frac',1,1); colormap(cmap); hold on;
+%cb = plot_globalspatial(lonc,latc,frac',1,1); colormap(cmap); hold on;
 load('colorblind_colormap.mat');
 
-figure;
-for i = 1 : length(continent_code)
-    code = continent_code{i};
-    continent(i).code  = code;
-    continent(i).name  = continent_name{i};
-    continent(i).index = []; 
-    S = shaperead(['../data/HydroBASINS/hybas_' code '_lev01-06_v1c/hybas_' code '_lev01_v1c.shp']);
-    for j = 1 : length(S)
-        tmp = inpoly2([lon1d lat1d],[S(j).X' S(j).Y']);
-        tmp = find(tmp == 1);
+%figure;
+%for i = 1 : length(continent_code)
+%    code = continent_code{i};
+%    continent(i).code  = code;
+%    continent(i).name  = continent_name{i};
+%    continent(i).index = []; 
+%    S = shaperead(['../data/HydroBASINS/hybas_' code '_lev01-06_v1c/hybas_' code '_lev01_v1c.shp']);
+%    for j = 1 : length(S)
+%        tmp = inpoly2([lon1d lat1d],[S(j).X' S(j).Y']);
+%        tmp = find(tmp == 1);
         %plot(S(j).X,S(j).Y,'-','LineWidth',2);
-        continent(i).index = [continent(i).index; tmp];
-    end
-    plot(lon1d(continent(i).index),lat1d(continent(i).index),'.','Color',colorblind(i,:),'LineWidth',3); hold on;
-end
-legend(continent_name,'FontSize',13,'FontWeight','bold');
+%        continent(i).index = [continent(i).index; tmp];
+%    end
+%    plot(lon1d(continent(i).index),lat1d(continent(i).index),'.','Color',colorblind(i,:),'LineWidth',3); hold on;
+%end
+%legend(continent_name,'FontSize',13,'FontWeight','bold');
 
 numc = length(lon1d);
 % (1). Generate defualt MOSART input file in 1D format
@@ -58,7 +61,7 @@ fname_out1 = CreateMOSARTUgrid(index_lnd, mosart_file, out_netcdf_dir, usrdat_na
 
 %(2). Generate defualt domain file in 1D format
 fname_out2 =  sprintf('%s/domain_lnd_%s%s.nc',out_netcdf_dir,tag,'_1d');
-area = generate_lnd_domain(lon1d,lat1d,xv,yv,frac1d,mask1d,[],fname_out2);
+area = generate_lnd_domain(lon1d,lat1d,xv,yv,frac1d,mask1d,area1d,fname_out2);
 
 %(3). Generate default ELM surface input file in 1D format
 sand = NaN(numc,10);

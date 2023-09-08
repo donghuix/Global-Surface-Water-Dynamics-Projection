@@ -29,7 +29,7 @@ function [e3sm_input, exportfig] = SetupEnvironment()
         e3sm_input = '/Users/xudo627/Library/CloudStorage/OneDrive-PNNL/projects/cesm-inputdata/';
 
     elseif strcmp(home,'/global/homes/d/donghui')
-        isp('Working on NERSC!');
+        disp('Working on NERSC!');
         addpath([home '/mylib/m/']);
         addpath([home '/mylib/data/']);
         addpath([home '/getPanoply_cMap/']);
