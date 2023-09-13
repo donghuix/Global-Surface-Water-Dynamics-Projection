@@ -3,7 +3,7 @@
 RES=ELMMOS_USRDAT
 COMPSET=IELM
 MACH=pm-cpu
-COMPILER=gnu
+COMPILER=intel
 PROJECT=m3780
 
 SRC_DIR=/global/homes/d/donghui/e3sm_surface_water
@@ -12,7 +12,7 @@ CASE_DIR=${SRC_DIR}/cime/scripts
 cd ${SRC_DIR}/cime/scripts
 
 GIT_HASH=`git log -n 1 --format=%h`
-CASE_NAME=ELMMOS_GLOBE_Surface_Water_${GIT_HASH}_cal01.`date "+%Y-%m-%d-%H%M%S"`
+CASE_NAME=ELMMOS_GLOBE_Surface_Water_${GIT_HASH}_cal02.`date "+%Y-%m-%d-%H%M%S"`
 
 ./create_newcase \
 -case ${CASE_NAME} \
@@ -35,17 +35,16 @@ cd ${CASE_DIR}/${CASE_NAME}
 ./xmlchange CIME_OUTPUT_ROOT=/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/outputs
 
 ./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_END -val 2014
-./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_START -val 1973
+./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_START -val 1974
 ./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_ALIGN -val 1
 
 ./xmlchange PIO_BUFFER_SIZE_LIMIT=67108864
-./xmlchange STOP_N=21,STOP_OPTION=nyears
-./xmlchange RESUBMIT=1
+./xmlchange STOP_N=41,STOP_OPTION=nyears
 ./xmlchange NTASKS=4160
 ./xmlchange JOB_WALLCLOCK_TIME=24:00:00
 
 cat >> user_nl_elm << EOF
-fsurdat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_cal_01.nc'
+fsurdat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_cal_02.nc'
 use_modified_infil = .true.
 hist_empty_htapes = .true.
 hist_fincl1 = 'QOVER', 'QDRAI', 'QH2OSFC', 'QRUNOFF', 'QINFL', 'FH2OSFC', 'EFLX_LH_TOT', 'RAIN', 'ZWT', 'ZWT_PERCH','FROST_TABLE','TSA','FSNO','FSAT','TWS'
