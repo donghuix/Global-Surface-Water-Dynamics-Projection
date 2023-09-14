@@ -8,8 +8,15 @@ re = 6.37122e6;% Earth radius
 
 domain_file = [e3sm_input 'share/domains/domain.lnd.r05_oEC60to30v3.190418.nc'];
 surf_file   = [e3sm_input 'lnd/clm2/surfdata_map/surfdata_0.5x0.5_simyr2010_c200624.nc'];
-%mosart_file = [e3sm_input 'rof/mosart/MOSART_Global_half_20200720.nc'];
-mosart_file = '../data/MOSART_Global_half_20200720.nc';
+mosart_file = [e3sm_input 'rof/mosart/MOSART_global_half_20180721b.nc'];
+% MOSART_global_half_20180721b.nc is MOSART_global_half_20180721a.nc +
+% elevation profile from MOSART_Global_half_20200720.nc
+if ~exist(surf_file,'file')
+    surf_file = '../data/surfdata_0.5x0.5_simyr2010_c200624.nc';
+end
+if ~exist(mosart_file,'file')
+    mosart_file = '../data/MOSART_global_half_20180721b.nc';
+end
 
 out_netcdf_dir = '../inputdata';
 
@@ -94,10 +101,6 @@ fname_out3 = CreateCLMUgridSurfdatForE3SM(...
                     [], []);           
 
 %(4). Generate calibration MOSART file with 10 global 1d domains
-areaTotal2 = ncread(fname_out1,'areaTotal2');
-rdep_uq  = NaN(numc*ntot,1);
-rwid_uq  = NaN(numc*ntot,1);
-
 fname_out4 = sprintf('%s/MOSART_%s.nc',out_netcdf_dir,[tag '_cal']);
 create_mosart_cal(fname_out1,fname_out4,numc,ntot)
 
