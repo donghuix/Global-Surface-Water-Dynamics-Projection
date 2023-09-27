@@ -26,7 +26,9 @@ lonc = ncread(domain_file,'xc');
 latc = ncread(domain_file,'yc');
 area = ncread(domain_file,'area');
 rwid = ncread(mosart_file,'rwid');
-index_lnd = find(frac > 0 & latc >= -60 & ~isnan(rwid));
+ele1 = ncread(mosart_file,'ele1');
+
+index_lnd = find(frac > 0 & latc >= -60 & ~isnan(rwid) & ~isnan(ele1));
 save('index_lnd.mat','index_lnd');
 lon1d = lonc(index_lnd);
 lat1d = latc(index_lnd);
