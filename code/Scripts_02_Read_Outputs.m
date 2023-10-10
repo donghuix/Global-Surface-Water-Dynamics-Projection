@@ -3,7 +3,10 @@ clear;close all;clc;
 [e3sm_input, exportfig] = SetupEnvironment();
 
 %case_names = {'ELMMOS_GLOBE_Surface_Water_847df06a6_cal01.2023-09-08-150838'};
-case_names = {'ELMMOS_GLOBE_Surface_Water_847df06_cal01_compy.2023-09-13-144635'};
+case_names = {'ELMMOS_GLOBE_Surface_Water_847df06_cal01_compy.2023-09-13-144635',...
+              'ELMMOS_GLOBE_Surface_Water_847df06_cal02_compy.2023-09-17-214204',...
+              'ELMMOS_GLOBE_Surface_Water_847df06_cal03_compy.2023-09-18-101542',...
+              'ELMMOS_GLOBE_Surface_Water_847df06_cal04_compy.2023-10-02-093842'};
 yr_start = 1973;
 
 for icase = 1 : length(case_names)
