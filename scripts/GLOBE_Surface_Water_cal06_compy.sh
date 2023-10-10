@@ -12,7 +12,7 @@ CASE_DIR=${SRC_DIR}/cime/scripts
 cd ${SRC_DIR}/cime/scripts
 
 GIT_HASH=`git log -n 1 --format=%h`
-CASE_NAME=ELMMOS_GLOBE_Surface_Water_${GIT_HASH}_cal04_compy.`date "+%Y-%m-%d-%H%M%S"`
+CASE_NAME=ELMMOS_GLOBE_Surface_Water_${GIT_HASH}_cal06_compy.`date "+%Y-%m-%d-%H%M%S"`
 
 ./create_newcase \
 -case ${CASE_NAME} \
@@ -41,10 +41,10 @@ cd ${CASE_DIR}/${CASE_NAME}
 ./xmlchange PIO_BUFFER_SIZE_LIMIT=67108864
 ./xmlchange STOP_N=42,STOP_OPTION=nyears
 ./xmlchange NTASKS=4000
-./xmlchange JOB_WALLCLOCK_TIME=25:00:00
+./xmlchange JOB_WALLCLOCK_TIME=24:00:00
 
 cat >> user_nl_elm << EOF
-fsurdat = '/compyfs/xudo627/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_cal_04.nc'
+fsurdat = '/compyfs/xudo627/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_cal_06.nc'
 use_modified_infil = .true.
 hist_empty_htapes = .true.
 hist_fincl1 = 'QOVER', 'QDRAI', 'QH2OSFC', 'QRUNOFF', 'QINFL', 'FH2OSFC', 'EFLX_LH_TOT', 'RAIN', 'ZWT', 'ZWT_PERCH','FROST_TABLE','TSA','FSNO','FSAT','TWS'
