@@ -36,11 +36,11 @@ if read_gswp3
             ta_fn = [gswp3_dir 'TPHWL3Hrly/clmforc.GSWP3.c2011.0.5x0.5.TPQWL.' num2str(yr) '-'  num2str(mo) '.nc'];
             end
             
-            pr_mo(:,:,mo) = nanmean(ncread(pr_fn,'PRECmms')).*86400.*days_of_month(mo); % [mm/month]
+            pr_mo(:,:,mo) = nanmean(ncread(pr_fn,'PRECTmms'),3).*86400.*days_of_month(mo); % [mm/month] h
             ta_mo(:,:,mo) = nanmean(ncread(ta_fn,'TBOT'),3); % [k]
         end
 
-        pr_yr = nansum(pr,3); % [mm/yr]
+        pr_yr = nansum(pr_mo,3); % [mm/yr]
         ta_mo = nanmean(ta_mo,3); % [k]
 
         out_fn = ['../data/GSWP3v1/GSWP3v1_' num2str(yr) '_Pr_Ta.mat'];
