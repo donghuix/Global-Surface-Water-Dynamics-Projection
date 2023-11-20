@@ -48,9 +48,22 @@ for i = 1 : 12
     gladseason(:,i)   = GLAD05(index_lnd);
 end
 
+pr1d = NaN(length(index_lnd),2014-2001+1);
+ta1d = NaN(length(index_lnd),2014-2001+1);
+for yr = 2001 : 2014
+    load(['../data/GSWP3v1/GSWP3v1_' num2str(yr) '_Pr_Ta.mat']);
+    tmp = pr_yr;
+    pr_yr(1:360,:) = tmp(361:end,:);
+    pr_yr(361:end,:) = tmp(1:360,:);
+    pr1d(:,yr-2000) = pr_yr(index_lnd);
+
+    tmp = ta_mo;
+    ta_mo(1:360,:) = tmp(361:end,:);
+    ta_mo(361:end,:) = tmp(1:360,:);
+    ta1d(:,yr-2000) = ta_mo(index_lnd);
+end
 
 load('../data/swf_cal.mat','swf_yr_cal','swf_mon_cal');
-swf_yr_cal = swf_yr_cal(:,3:end); % 2001 - 2014;
 
 load('LargeLakes.mat');
 lakein = [];
@@ -60,9 +73,12 @@ for i = 1 : 20
     lakein  = [lakein; tmp];
 end
 
-swf_yr_cal(lakein,:) = NaN; swf_yr_cal = swf_yr_cal(:,(1999 - 1993 + 1) : end);
+swf_yr_cal(lakein,:) = NaN; swf_yr_cal = swf_yr_cal(:,(2001 - 1993 + 1) : end);
 gladannual(lakein,:) = NaN;
 swf_yr_cal(nanmean(swf_mon_cal,2) >= 0.5,:) = NaN;
+pr1d(lakein,:) = NaN; ta1d(lakein,:) = NaN;
+pr1d(nanmean(swf_mon_cal,2) >= 0.5,:) = NaN;
+ta1d(nanmean(swf_mon_cal,2) >= 0.5,:) = NaN;
 
 swf_yr_cal(isnan(gladannual)) = NaN;
 gladannual(isnan(swf_yr_cal)) = NaN;
@@ -75,6 +91,8 @@ swf_mon_cal(isnan(gladseason)) = NaN;
 
 swf_yr_cal  = swf_yr_cal  .* area;
 swf_mon_cal = swf_mon_cal .* area;
+pr1d        = pr1d .* area;
+ta1d        = ta1d .* area;
 gladannual  = gladannual./100 .* area;
 gladseason  = gladseason./100 .* area;
 
@@ -84,9 +102,31 @@ continent_name = {'Africa','Arctic','Asia','Austrialia','Europe','Greenland','No
 figure(1); set(gcf,'Position',[10 10 1200 600]);
 subplot(3,3,1);
 plot(2001:2014,zscore(nansum(gladannual,1)),'k-','LineWidth',2); hold on; grid on;
-plot(2001:2014,zscore(nansum(swf_yr_cal,1)),'r--','LineWidth',2);
+plot(2001:2014,zscore(nansum(swf_yr_cal,1)),'k--','LineWidth',2);
+plot(2001:2014,zscore(nansum(pr1d,1)),'b--','LineWidth',2);
+plot(2001:2014,zscore(nansum(ta1d,1)),'r--','LineWidth',2);
 add_title(gca,'Global');
 xlim([2001 2014]);
+
+y = zscore(nansum(gladannual,1));
+x1= zscore(nansum(swf_yr_cal,1));
+x2= zscore(nansum(pr1d,1));
+x3= zscore(nansum(ta1d,1));
+
+y = detrend(y);
+x1= detrend(x1);
+x2= detrend(x2);
+x3= detrend(x3);
+
+R = corrcoef(y,x1);
+rho(1,1) = R(1,2);
+R = corrcoef(x1,x2);
+rho(1,2) = R(1,2);
+R = corrcoef(x1,x3);
+rho(1,3) = R(1,2);
+R = corrcoef(x2,x3);
+rho(1,4) = R(1,2);
+
 
 k = 2;
 for i = [1 2 3 4 5 7 8 9]
@@ -106,7 +146,29 @@ for i = [1 2 3 4 5 7 8 9]
    figure(1);
    subplot(3,3,k);
    plot(2001:2014,zscore(nansum(gladannual(continent(i).index,:),1)),'k-','LineWidth',2); hold on; grid on;
-   plot(2001:2014,zscore(nansum(swf_yr_cal(continent(i).index,:),1)),'r--','LineWidth',2);
+   plot(2001:2014,zscore(nansum(swf_yr_cal(continent(i).index,:),1)),'k--','LineWidth',2);
+   plot(2001:2014,zscore(nansum(pr1d(continent(i).index,:),1)),'b--','LineWidth',2);
+   plot(2001:2014,zscore(nansum(ta1d(continent(i).index,:),1)),'r--','LineWidth',2);
+
+   y = zscore(nansum(gladannual(continent(i).index,:),1));
+   x1= zscore(nansum(swf_yr_cal(continent(i).index,:),1));
+   x2= zscore(nansum(pr1d(continent(i).index,:),1));
+   x3= zscore(nansum(ta1d(continent(i).index,:),1));
+
+   y = detrend(y);
+   x1= detrend(x1);
+   x2= detrend(x2);
+   x3= detrend(x3);
+   
+   R = corrcoef(y,x1);
+   rho(k,1) = R(1,2);
+   R = corrcoef(x1,x2);
+   rho(k,2) = R(1,2);
+   R = corrcoef(x1,x3);
+   rho(k,3) = R(1,2);
+   R = corrcoef(x2,x3);
+   rho(k,4) = R(1,2);
+
    add_title(gca,continent_name{i});
    xlim([2001 2014]);
 

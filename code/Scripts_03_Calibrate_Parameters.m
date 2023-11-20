@@ -2,6 +2,8 @@ clear;close all;clc;
 
 re = 6.37122e6;% Earth radius
 
+do_cal = false;
+
 [e3sm_input, exportfig] = SetupEnvironment();
 
 month_labels = {'01_Jan','02_Feb','03_Mar','04_Apr','05_May','06_Jun', ...
@@ -51,9 +53,18 @@ yr_end   = 2014;
 yr_read  = 1993;
 yr_glad  = 1999;
 
-if exist('../data/swf_cal.mat','file')
+if exist('../data/swf_cal.mat','file') && ~do_cal   
     load('../data/swf_cal.mat');
+    load('../data/par_cal.mat');
 else
+    
+    rng(4); % Random seed
+    X = lhsdesign(100,2,'Criterion','correlation'); % fover, fc
+    fover = exp(log(0.1) + (log(5)-log(0.1))*X(:,1));
+    %fover = 0.1 + (0.5-0.1)*X(:,1);
+    fc    = 0.001 + (0.4-0.001)*X(:,2);
+%     figure;
+%     plot(fc,fover,'bx','LineWidth',2); hold on;
 
     swf_sea_cal = NaN(numc,12);
 
@@ -65,8 +76,11 @@ else
     fld_yr_cal = NaN(numc,yr_end - yr_read + 1);
     h2o_yr_cal = NaN(numc,yr_end - yr_read + 1);
     
-    NSEcal = NaN(numc,1);
-    for i = 1 : 8
+    NSEcal    = NaN(numc,1);
+    fover_cal = ones(numc,1).*0.5;
+    fc_cal    = ones(numc,1).*0.4;
+
+    for i = 1 : 10
         load(['../data/cal_' num2str(i) '.mat']);
         swf = flooded + fh2osfc;
         if i < 10
@@ -105,6 +119,9 @@ else
                         tmp2 = reshape(h2ogrid(ind,:)',[12,yr_end - yr_read + 1]);
                         h2o_mon_cal(j,:) = h2ogrid(ind,:);
                         h2o_yr_cal(j,:)  = nanmean(tmp2,1);
+
+                        fover_cal(j) = fover(ind);
+                        fc_cal(j)    = fc(ind);
                     end
                 else
                     ind = find(NSE == max(NSE));
@@ -123,6 +140,9 @@ else
                             tmp2 = reshape(h2ogrid(ind,:)',[12,yr_end - yr_read + 1]);
                             h2o_mon_cal(j,:) = h2ogrid(ind,:);
                             h2o_yr_cal(j,:)  = nanmean(tmp2,1);
+
+                            fover_cal(j) = fover((i-1)*10 + ind);
+                            fc_cal(j)    = fc((i-1)*10 + ind);
                         end
                     end
                 end
@@ -135,6 +155,8 @@ else
                                'fld_mon_cal','fld_yr_cal', ...
                                'h2o_mon_cal','h2o_yr_cal', ...
                                'swf_sea_cal');
+    save('../data/par_cal.mat','fover_cal','fc_cal');
+
 end
 
 xc   = ncread('../data/domain_lnd_GLOBE_1d.nc','xc');
@@ -151,11 +173,16 @@ end
 swf_sea_cal(lakein,:) = NaN;
 swf_sea_cal(nanmean(swf_sea_cal,2) >= 0.3,:) = NaN;
 
+S = shaperead('../data/TPBoundary_new(2021)/TPBoundary_new(2021).shp');
+
+
 figure; set(gcf,'Position',[10 10 1000 1200]);
 axs(1) = subplot(2,1,1);
 [cb,~,~] = plot_globalspatial(lon,lat,gladannual'./100,1,1); clim([0 0.3]); hold on; grid on;
 colormap(gca,cmap);
 ylim([-60 80]); xlim([-180 180]);
+plot(S.X,S.Y,'k-','LineWidth',2);
+
 pos1 = get(gca,'Position');
 
 axs(2) = subplot(2,1,2);
@@ -164,6 +191,8 @@ patch(xv,yv,nanmean(swf_sea_cal,2),'LineStyle','none'); clim([0 0.3]); hold on; 
 %plot(xc(nanmean(swfcal,2) > 0.3), yc(nanmean(swfcal,2) > 0.3),'rx','LineWidth',2);
 ylim([-60 80]); xlim([-180 180]);%set(gca,'XTick',[],'YTick',[]); 
 plot(coastlon,coastlat,'k-','LineWidth',1);
+plot(S.X,S.Y,'k-','LineWidth',2);
+
 colormap(gca,cmap);
 
 axs(2).Position(2) = axs(2).Position(2) + 0.075;
@@ -218,6 +247,14 @@ t = add_title(axs(3),str,18,'in');
 t.Color = 'b';
 t.Position(1) = t.Position(1) + 0.15;
 t.Position(2) = t.Position(2) - 0.55;
+
+figure;
+fc_cal(isnan(nanmean(swf_sea_cal,2))) = NaN;
+fover_cal(isnan(nanmean(swf_sea_cal,2))) = NaN;
+subplot(2,1,1);
+patch(xv,yv,fover_cal,'LineStyle','none'); colorbar;
+subplot(2,1,2);
+patch(xv,yv,fc_cal,'LineStyle','none'); colorbar;
 
 figure;
 plot(nanmean(gladseason,1)./100,'k-','LineWidth',2); hold on; grid on;
