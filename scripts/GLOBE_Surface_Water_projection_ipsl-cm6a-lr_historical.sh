@@ -6,7 +6,7 @@ MACH=pm-cpu
 COMPILER=gnu
 PROJECT=m3780
 
-FORCING=gfdl-esm4
+FORCING=ipsl-cm6a-lr
 SCENARIO=historical
 
 SRC_DIR=/global/homes/d/donghui/e3sm_surface_water
