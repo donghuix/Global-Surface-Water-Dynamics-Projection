@@ -6,7 +6,7 @@ MACH=pm-cpu
 COMPILER=gnu
 PROJECT=m3780
 
-FORCING=gfdl-esm4
+FORCING=ipsl-cm6a-lr
 SCENARIO=ssp585
 
 SRC_DIR=/global/homes/d/donghui/e3sm_surface_water
@@ -55,7 +55,7 @@ cd ${CASE_DIR}/${CASE_NAME}
 
 cat >> user_nl_mosart << EOF
 frivinp_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/MOSART_GLOBE_1d_c230915.nc'
-finidat_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/outputs/GLOBE_Surface_Water_Projection_gfdl-esm4_historical_0b7cdf4760.2023-11-15-211244.mosart.r.0065-01-01-00000.nc'
+finidat_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/outputs/GLOBE_Surface_Water_Projection_ipsl-cm6a-lr_historical_0b7cdf4760.2023-11-17-211701.mosart.r.0065-01-01-00000.nc'
 rtmhist_fincl1='RIVER_DISCHARGE_OVER_LAND_LIQ','RIVER_DISCHARGE_TO_OCEAN_LIQ','FLOODED_FRACTION','FLOODPLAIN_FRACTION'
 inundflag = .true.
 opt_elevprof = 1
@@ -63,7 +63,7 @@ EOF
 
 cat >> user_nl_elm << EOF
 fsurdat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_1d_calibrated.nc'
-finidat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/outputs/GLOBE_Surface_Water_Projection_gfdl-esm4_historical_0b7cdf4760.2023-11-15-211244.elm.r.0065-01-01-00000.nc'
+finidat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/outputs/GLOBE_Surface_Water_Projection_ipsl-cm6a-lr_historical_0b7cdf4760.2023-11-17-211701.elm.r.0065-01-01-00000.nc'
 flanduse_timeseries = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/landuse.timeseries_0.5x0.5_SSP5_RCP85_simyr2015-2100_GLOBAL_1d_c240209.nc'
 check_dynpft_consistency = .false.
 use_modified_infil = .true.
