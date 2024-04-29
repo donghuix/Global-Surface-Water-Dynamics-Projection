@@ -174,7 +174,7 @@ for i = [1 2 3 4 5 7 8 9]
 
    figure(2);
    subplot(3,3,i);
-   plot(nansum(gladseason(continent(i).index,:),1), 'k-','LineWidth',2); hold on; grid on;
+   plot(nansum(gladseason(continent(i).index,:),1), 'k-', 'LineWidth',2); hold on; grid on;
    plot(nansum(swf_mon_cal(continent(i).index,:),1),'r--','LineWidth',2);
    add_title(gca,continent_name{i});
    k = k + 1;
