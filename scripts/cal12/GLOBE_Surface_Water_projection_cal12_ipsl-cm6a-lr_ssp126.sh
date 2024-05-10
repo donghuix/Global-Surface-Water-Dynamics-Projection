@@ -1,13 +1,13 @@
 #!/bin/sh
 
 RES=ELMMOS_USRDAT
-COMPSET=SSP585_DATM%GSWP3v1_ELM%SPBC_SICE_SOCN_MOSART_SGLC_SWAV
+COMPSET=SSP126_DATM%GSWP3v1_ELM%SPBC_SICE_SOCN_MOSART_SGLC_SWAV
 MACH=pm-cpu
 COMPILER=gnu
 PROJECT=m3780
 
-FORCING=gfdl-esm4
-SCENARIO=ssp585
+FORCING=ipsl-cm6a-lr
+SCENARIO=ssp126
 
 SRC_DIR=/global/homes/d/donghui/e3sm_surface_water
 CASE_DIR=${SRC_DIR}/cime/scripts
@@ -40,7 +40,7 @@ cd ${CASE_DIR}/${CASE_NAME}
 ./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_START -val 2015
 ./xmlchange -file env_run.xml -id DATM_CLMNCEP_YR_ALIGN -val 2015
 
-./xmlchange DATM_CO2_TSERIES=SSP5-8.5
+./xmlchange DATM_CO2_TSERIES=SSP1-2.6
 ./xmlchange ELM_CO2_TYPE=diagnostic
 ./xmlchange CCSM_BGC=CO2A
 
@@ -56,7 +56,7 @@ cd ${CASE_DIR}/${CASE_NAME}
 
 cat >> user_nl_mosart << EOF
 frivinp_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/MOSART_GLOBE_1d_c230915.nc'
-finidat_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/scripts/cal12/outputs/GLOBE_Surface_Water_Projection_cal12_gfdl-esm4_historical_0b7cdf4760.2024-05-08-113608.mosart.r.2015-01-01-00000.nc'
+finidat_rtm = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/scripts/cal12/outputs/GLOBE_Surface_Water_Projection_cal12_ipsl-cm6a-lr_historical_0b7cdf4760.2024-05-08-112526.mosart.r.2015-01-01-00000.nc'
 inundflag = .true.
 opt_elevprof = 1
 routingmethod = 2
@@ -64,8 +64,8 @@ EOF
 
 cat >> user_nl_elm << EOF
 fsurdat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/surfdata_GLOBE_1d_calibrated_12.nc'
-finidat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/scripts/cal12/outputs/GLOBE_Surface_Water_Projection_cal12_gfdl-esm4_historical_0b7cdf4760.2024-05-08-113608.elm.r.2015-01-01-00000.nc'
-flanduse_timeseries = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/landuse.timeseries_0.5x0.5_SSP5_RCP85_simyr2015-2100_GLOBAL_1d_c240209.nc'
+finidat = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/scripts/cal12/outputs/GLOBE_Surface_Water_Projection_cal12_ipsl-cm6a-lr_historical_0b7cdf4760.2024-05-08-112526.elm.r.2015-01-01-00000.nc'
+flanduse_timeseries = '/global/cfs/projectdirs/m3780/donghui/Global-Surface-Water-Dynamics-Projection/inputdata/landuse.timeseries_0.5x0.5_SSP1_RCP26_simyr2015-2100_GLOBAL_1d_c240209.nc'
 check_dynpft_consistency = .false.
 do_transient_pfts = .true.
 use_modified_infil = .true.
@@ -78,9 +78,9 @@ EOF
 
 ./case.setup
 
-cp ${CASE_DIR}/${CASE_NAME}/CaseDocs/datm.streams.txt.co2tseries.SSP5-8.5 ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP5-8.5 
-chmod +rw ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP5-8.5
-perl -w -i -p -e "s@/global/cfs/cdirs/e3sm/inputdata/atm/datm7/CO2@/global/cfs/projectdirs/m3780/donghui/inputdata/CO2@" ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP5-8.5 
+cp ${CASE_DIR}/${CASE_NAME}/CaseDocs/datm.streams.txt.co2tseries.SSP1-2.6 ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP1-2.6 
+chmod +rw ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP1-2.6 
+perl -w -i -p -e "s@/global/cfs/cdirs/e3sm/inputdata/atm/datm7/CO2@/global/cfs/projectdirs/m3780/donghui/inputdata/CO2@" ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.co2tseries.SSP1-2.6 
 
 # ---------------------------------------------------------------------------- #
 # **************************************************************************** #
@@ -189,11 +189,11 @@ sed -i '/ZBOT/d' ${CASE_DIR}/${CASE_NAME}/user_datm.streams.txt.CLMGSWP3v1.TPQW
 # **************************************************************************** #
 # ---------------------------------------------------------------------------- #
 
-cp ./CaseDocs/datm.streams.txt.presaero.SSP5-8.5 ./user_datm.streams.txt.presaero.SSP5-8.5
-chmod +rw ./user_datm.streams.txt.presaero.SSP5-8.5
-perl -w -i -p -e "s@/global/cfs/cdirs/e3sm/inputdata/atm/cam/chem/trop_mozart_aero/aero@/global/cfs/cdirs/m3520/share/cesm_inputdata/aero_deposit_data@" ./user_datm.streams.txt.presaero.SSP5-8.5
-perl -w -i -p -e "s@aerosoldep_SSP5-8.5_monthly_1849-2101_UNSET.nc@aerodep_clm_SSP585_b.e21.BSSP585cmip6.f09_g17.CMIP6-SSP5-8.5.001_2014-2101_monthly_0.9x1.25_c190419.nc@" ./user_datm.streams.txt.presaero.SSP5-8.5
-sed -i '/ZBOT/d' ./user_datm.streams.txt.presaero.SSP5-8.5
+cp ./CaseDocs/datm.streams.txt.presaero.SSP1-2.6 ./user_datm.streams.txt.presaero.SSP1-2.6
+chmod +rw ./user_datm.streams.txt.presaero.SSP1-2.6
+perl -w -i -p -e "s@/global/cfs/cdirs/e3sm/inputdata/atm/cam/chem/trop_mozart_aero/aero@/global/cfs/cdirs/m3520/share/cesm_inputdata/aero_deposit_data@" ./user_datm.streams.txt.presaero.SSP1-2.6
+perl -w -i -p -e "s@aerosoldep_SSP1-2.6_monthly_1849-2101_UNSET.nc@aerodep_clm_SSP126_b.e21.BSSP126cmip6.f09_g17.CMIP6-SSP1-2.6.001_2014-2101_monthly_0.9x1.25_c190523.nc@" ./user_datm.streams.txt.presaero.SSP1-2.6
+sed -i '/ZBOT/d' ./user_datm.streams.txt.presaero.SSP1-2.6
 # ---------------------------------------------------------------------------- #
 # **************************************************************************** #
 # ---------------------------------------------------------------------------- #
