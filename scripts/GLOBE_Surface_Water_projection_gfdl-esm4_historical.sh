@@ -62,7 +62,8 @@ use_modified_infil = .true.
 hist_empty_htapes = .true.
 hist_fincl1 = 'QOVER', 'QDRAI', 'QH2OSFC', 'QRUNOFF', 'QINFL', 'QSNOMELT',    \
 'FH2OSFC', 'EFLX_LH_TOT', 'RAIN', 'ZWT', 'ZWT_PERCH','FROST_TABLE','TSA',     \
-'FSNO','FSAT','TWS','FSDS','FSA','FSR','FIRE','QSNOMELT','FPSN', 'FCTR'
+'FSNO','FSAT','TWS','FSDS','FSA','FSR','FIRE','QSNOMELT','FPSN', 'FCTR', 'SNOW', \
+'SOILICE','H2OSOI','H2OSFC','SOILWATER_10CM'
 EOF
 
 cat >> user_nl_datm << EOF
